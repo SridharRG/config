@@ -1,0 +1,35 @@
+version: "3"
+
+services:
+  outline:
+    image: outlinewiki/outline
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "3010:3000"
+    volumes:
+      - ./outline_data:/var/lib/outline/data
+    depends_on:
+      - outline_postgres
+      - outline_redis
+
+  outline_postgres:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: outline
+      POSTGRES_PASSWORD: outline
+      POSTGRES_DB: outline
+    volumes:
+      - outline_pg:/var/lib/postgresql/data
+
+  outline_redis:
+    image: redis:7
+    restart: always
+    volumes:
+      - outline_redis:/data
+
+volumes:
+  outline_pg:
+  outline_redis:
+
